@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GÖĞÜS RÖNTGENİNDE YABANCI CİSİM TANIMA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+        .image-container, .label-container {
+            width: 45%;
+            margin-right: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .image-container h2, .label-container h2 {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            margin: 0;
+        }
+        .image-container img {
+            width: 100%;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .label-container h2 {
+            background-color: #28a745;
+        }
+        .label-container ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .label-container li {
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        label {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .model-title {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            color: #007bff;
+        }
+    </style>
+    <script>
+        function showFileName() {
+            const fileInput = document.getElementById('image');
+            const fileNameSpan = document.getElementById('file-name');
+            fileNameSpan.textContent = Array.from(fileInput.files).map(file => file.name).join(', ');
+        }
+    </script>
+</head>
+<body>
+    <h1>GÖĞÜS RÖNTGENİNDE YABANCI CİSİM TANIMA</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" id="image" name="images[]" accept="image/*" onchange="showFileName()" multiple>
+        <label for="image">Dosya Seç</label>
+        <span id="file-name"></span>
+        <button type="submit">Yükle</button>
+    </form>
+    {% if results_list %}
+    <div class="model-title">YOLO Modeli Sonuçları</div>
+    {% for original_image, processed_image, labels_and_percentages in results_list %}
+    <div class="container">
+        <div class="image-container">
+            <h2>Orjinal Görsel</h2>
+            <img src="data:image/jpeg;base64,{{ original_image }}">
+        </div>
+        {% if processed_image %}
+        <div class="image-container">
+            <h2>İşlenmiş Görsel</h2>
+            <img src="data:image/jpeg;base64,{{ processed_image }}">
+        </div>
+        <div class="label-container">
+            <h2>Etiketler ve Yüzdeler</h2>
+            <ul>
+                {% for label, percentage in labels_and_percentages %}
+                <li>{{ label }}: {{ percentage }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if results_listFrcnn %}
+    <div class="model-title">Faster R-CNN Modeli Sonuçları</div>
+    {% for original_image, processed_image, labels_and_percentages in results_listFrcnn %}
+    <div class="container">
+        <div class="image-container">
+            <h2>Orjinal Görsel</h2>
+            <img src="data:image/jpeg;base64,{{ original_image }}">
+        </div>
+        {% if processed_image %}
+        <div class="image-container">
+            <h2>İşlenmiş Görsel</h2>
+            <img src="data:image/jpeg;base64,{{ processed_image }}">
+        </div>
+        <div class="label-container">
+            <h2>Etiketler ve Yüzdeler</h2>
+            <ul>
+                {% for label, percentage in labels_and_percentages %}
+                <li>{{ label }}: {{ percentage }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+</body>
+</html>
